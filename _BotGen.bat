@@ -1,2 +1,2 @@
-start /B /wait python test.py
+start /B /wait python main.py
 pause
