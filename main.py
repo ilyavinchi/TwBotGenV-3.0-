@@ -340,8 +340,9 @@ def autofollowing(autofollowing_bot_name, follow_mode = 0, last_count = 0):
 						jdump("Sub_bases/" + autofollowing_bot_name + " base.json", following_save_base)
 						count_of_followings += 1
 						following_base.pop(0)
-						changearrayval("Statistic/" + autofollowing_bot_name + " stat.json", "Followings", count_of_followings)
+						changearrayval("Statistic/" + autofollowing_bot_name + " stat.json", "Followings", str(count_of_followings) + "/" + str(MAX_FOLLOWING_PER_DAY))
 						if count_of_followings == MAX_FOLLOWING_PER_DAY:
+							changearrayval("Statistic/" + autofollowing_bot_name + " stat.json", "Followings", "End Following Successful")
 							return True, 0
 						else:
 							sleep(randint(PAUSE_BETWEEN_FOLLOWINGS[0], PAUSE_BETWEEN_FOLLOWINGS[1]))
@@ -641,6 +642,7 @@ def autofollowing_loop():
 					if followings_list[z]["Timer"] and followings_list[z]["Timer"] < time():
 						start_name = z
 						followings_list[z]["Timer"] = False
+						jdump("Loops/following.json", followings_list)
 						break
 				if start_name:
 					follow_threads[x] = Thread(target=autofollowing_tester, args=(start_name,))
@@ -670,10 +672,9 @@ def statistic_bot():
 			for x in accounts_set_list:
 				accounts_set = jload("Statistic/" + x)
 				print()
-				bot.send_message(message.chat.id, "Bot name: " + x.replace(" stat.json", "") + "\nFollowings: " + accounts_set["Followings"] + "\nPosts: " + accounts_set["Posts"])
+				bot.send_message(message.chat.id, "Bot name: " + x.replace(" stat.json", "") + "\nFollowings: " + str(accounts_set["Followings"]) + "\nPosts: " + str(accounts_set["Posts"]))
 	bot.polling()
-# print(ban_test("Deloris Matthews"))
-# test_account("Deloris Matthews")
+
 Thread(target=autoposting_loop).start()
 Thread(target=autofollowing_loop).start()
 Thread(target=statistic_bot).start()
