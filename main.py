@@ -189,7 +189,7 @@ def balance():
 	b = get('http://api.sms-reg.com/getBalance.php?apikey=8t0kjwxk118uih3peiw3c8rbb7e61g62')
 	b = b.text
 	json_b = loads(b)
-	if int(json_b["balance"].split(".")[0]) > 8:
+	if int(json_b["balance"].split(".")[0]) > 4:
 		return True
 	else:
 		return
@@ -415,9 +415,10 @@ def newaccount():
 		# Получение телефона
 		print("TRY GET PHONE")
 		phone, tzid = phone_gen()
+		# phone, tzid = "+380687900282", "000000"
 		if phone:
 			print(phone)
-			driver = driver_start_empty("https://twitter.com/i/flow/signup", True)
+			driver = driver_start_empty("https://twitter.com/i/flow/signup", False)
 			name = get_full_name(gender='female')
 			wait(driver, "//input[@type='text']", 60, 1).send_keys(name)
 			wait(driver, "//input[@type='tel']", 60, 1).send_keys(phone)
@@ -453,10 +454,16 @@ def newaccount():
 						wait(driver, "//input", 10, 1).send_keys(Keys.BACK_SPACE)
 					wait(driver, "//input", 10, 1).send_keys(try_combinations[x])
 					wait(driver, '//div[@data-testid="settingsDetailSave"]', 10, 1).click()
+					login = try_combinations[x]
 					sleep(2)
 				else:
 					break
-			login = wait(driver, "//div[@role='tablist']/div/h2", 10, 1).text
+
+			try:
+				login = wait(driver, "//div[@role='tablist']/div/h2", 10, 1).text
+			except Exception as e:
+				pass
+			
 			print(login)
 			driver.get("https://twitter.com/settings/language")
 			if wait(driver, "//option[@value='en']", 10, 1):
@@ -613,7 +620,7 @@ def autoposting_loop():
 		for x in posting_names:
 			print("START NEW AUTOPOSTING")
 			if not autoposting(x):
-				Thread(target=ban_test, args=(x)).start()
+				Thread(target=ban_test, args=(x,)).start()
 
 		print("PAUSE_BETWEEN_POSTS:", PAUSE_BETWEEN_POSTS)
 		sleep(PAUSE_BETWEEN_POSTS)
