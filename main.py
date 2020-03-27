@@ -535,10 +535,11 @@ def access(access_name):
 			bot.send_message(457184560, "Время ввышло")
 			driver.quit()
 			return True
-		driver.get("https://twitter.com/account/access?did_not_receive=true")
-		wait(driver, '//input[@type="submit"]', 10, 1).click()
-		sleep(2)
-		for n in range(1200):
+		for n in range(300):
+			if n % 60 == 0:
+				driver.get("https://twitter.com/account/access?did_not_receive=true")
+				wait(driver, '//input[@type="submit"]', 10, 1).click()
+				sleep(2)
 			enter_info = get('http://api.sms-reg.com/getNumRepeat.php?tzid=' + tzid + '&apikey=8t0kjwxk118uih3peiw3c8rbb7e61g62')
 			enter_info = enter_info.text
 			json_enter_info = loads(enter_info)
@@ -610,9 +611,11 @@ def autoposting_loop():
 	while True:
 		posting_names = jload("Loops/posting.json")
 		for x in posting_names:
+			print("START NEW AUTOPOSTING")
 			if not autoposting(x):
 				Thread(target=ban_test, args=(x)).start()
 
+		print("PAUSE_BETWEEN_POSTS:", PAUSE_BETWEEN_POSTS)
 		sleep(PAUSE_BETWEEN_POSTS)
 
 def diebalance():
@@ -634,8 +637,10 @@ def autofollowing_tester(autofollowing_tester_name):
 			changearrayval('Loops/following.json', autofollowing_tester_name, following_setting)
 def autofollowing_loop():
 	while True:
+		print("START")
 		for x in range(len(follow_threads)):
 			if not follow_threads[x].is_alive():
+				print("NEW START AUTOFOLLOWING")
 				followings_list = jload("Loops/following.json")
 				start_name = None
 				for z in followings_list:
@@ -662,6 +667,7 @@ def autofollowing_loop():
 						diebalance()
 						follow_threads[x] = Thread(target=diebalance)
 						follow_threads[x].start()
+		print("PAUSE")
 		sleep(30)
 
 def statistic_bot():
@@ -675,6 +681,6 @@ def statistic_bot():
 				bot.send_message(message.chat.id, "Bot name: " + x.replace(" stat.json", "") + "\nFollowings: " + str(accounts_set["Followings"]) + "\nPosts: " + str(accounts_set["Posts"]))
 	bot.polling()
 
-Thread(target=autoposting_loop).start()
-Thread(target=autofollowing_loop).start()
-Thread(target=statistic_bot).start()
+# Thread(target=autoposting_loop).start()
+# Thread(target=autofollowing_loop).start()
+# Thread(target=statistic_bot).start()
