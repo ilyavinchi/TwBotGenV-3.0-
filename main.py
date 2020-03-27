@@ -317,7 +317,7 @@ def parsing(dr):
 			continue
 def autofollowing(autofollowing_bot_name, follow_mode = 0, last_count = 0):
 	try:
-		driver = driver_start(autofollowing_bot_name, False)
+		driver = driver_start(autofollowing_bot_name, True)
 		count_of_followings = last_count
 		count_of_unfollowings = last_count
 		following_base = []
