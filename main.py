@@ -671,6 +671,7 @@ def autofollowing_loop():
 		sleep(30)
 
 def statistic_bot():
+	print("STAT START")
 	@bot.message_handler(content_types=['text'])
 	def send_text(message):
 		if message.text.lower() == "stat":
@@ -681,6 +682,6 @@ def statistic_bot():
 				bot.send_message(message.chat.id, "Bot name: " + x.replace(" stat.json", "") + "\nFollowings: " + str(accounts_set["Followings"]) + "\nPosts: " + str(accounts_set["Posts"]))
 	bot.polling()
 
-# Thread(target=autoposting_loop).start()
-# Thread(target=autofollowing_loop).start()
-# Thread(target=statistic_bot).start()
+Thread(target=autoposting_loop).start()
+Thread(target=autofollowing_loop).start()
+Thread(target=statistic_bot).start()
